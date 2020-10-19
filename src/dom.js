@@ -80,12 +80,101 @@ window.dom = {
   },
 
   //修改style
+  style(node, name, value) {
+    if (arguments.length === 3) {
+      //dom.style(div, 'color', 'red')
+      node.style[name] = value
+    } else if (arguments.length === 2) {
+      //dom.style(div, 'color')
+      if (typeof name === 'string') {
+        return node.style[name]
+      } else if (name instanceof Object) {
+        //dom.style(div,{color: 'red'})
+        const object = name
+        for (let key in object) {
+          node.style[key] = object[key]
+        }
+      }
+    }
+  },
 
-  //添加class
-
-  //删除class
+  //添加class,删除class
+  class: {
+    add(node, className) {
+      node.classList.add(className)
+    },
+    remove(node, className) {
+      node.classList.remove(className)
+    },
+    has(node, className) {
+      return node.classList.contains(className)
+    }
+  },
 
   //添加事件监听
+  on(node, eventName, fn) {
+    return node.addEventListener(eventName, fn)
+  },
 
   //删除监听事件
+  off(node, eventName, fn) {
+    node.removeEventListener(eventName, fn)
+  },
+
+  //获取标签或元素
+  find(selector, scope) {
+    return (scope || document).querySelectorAll(selector)
+  },
+
+  //获取父元素
+  parent(node) {
+    return node.parentNode
+  },
+
+  //获取子元素
+  children(node) {
+    return node.children
+  },
+
+  //获取兄弟姐妹元素
+  siblings(node) {
+    return Array.from(node.parentNode.children).filter(n => n !== node)
+  },
+
+  //获取弟弟
+  next(node) {
+    let x = node.nextSibling
+    while (x && x.nodeType === 3) {
+      x = x.nextSibling
+    }
+    return x
+  },
+
+  //获取哥哥
+  previous(node) {
+    let x = node.previousSibling
+    while (x && x.nodeType === 3) {
+      x = x.previousSibling
+    }
+    return x
+  },
+
+  //遍历所有节点
+  each(nodeList, fn) {
+    for (let i = 0; i < nodeList.length; i++) {
+      fn.call(null, nodeList[i])
+    }
+  },
+
+  //获取排行老几
+  index(node) {
+    const list = dom.children(node.parentNode)
+    let i
+    for (i = 0; i < list.length; i++) {
+      if (list[i] === node) {
+        break
+      }
+    }
+    return i
+  },
 }
